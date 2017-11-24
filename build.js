@@ -62,71 +62,70 @@ return Promise.resolve()
     const rollupGlobals = {
       // The key here is library name, and the value is the the name of the global variable name
       // the window object.
-      // See https://github.com/rollup/rollup/wiki/JavaScript-API#globals for more.
       '@angular/core': 'ng.core'
     };
 
     const rollupBaseConfig = {
-      external: Object.keys(rollupGlobals),
-      plugins: [
-        commonjs({
-          include: ['node_modules/rxjs/**']
-        }),
-        sourcemaps(),
-        nodeResolve({
-          jsnext: true,
-          module: true
-        })
-      ]
+      inputOptions: {
+        external: Object.keys(rollupGlobals),
+        plugins: [
+          commonjs({
+            include: ['node_modules/rxjs/**']
+          }),
+          sourcemaps(),
+          nodeResolve({
+            jsnext: true,
+            module: true
+          })
+        ]
+      },
+      outputOptions: {
+        name: camelCase(libName),
+        format: 'umd',
+        sourcemap: true,
+        globals: rollupGlobals
+      }
     };
 
     // UMD bundle.
-    const umdConfig = Object.assign({}, rollupBaseConfig, {
-      input: es5Entry,
-      output: {
-        name: camelCase(libName),
-        file: path.join(distFolder, `bundles`, `${libName}.umd.js`),
-        format: 'umd',
-        sourcemap: true,
-        globals: rollupGlobals
-      }
+    const umdConfig = Object.assign({}, {
+      inputOptions: Object.assign({}, rollupBaseConfig.inputOptions, { 
+        input: es5Entry 
+      }),
+      outputOptions: Object.assign({}, rollupBaseConfig.outputOptions, {
+        file: path.join(distFolder, `bundles`, `${libName}.umd.js`)
+      })
     });
 
     // Minified UMD bundle.
-    const minifiedUmdConfig = Object.assign({}, rollupBaseConfig, {
-      input: es5Entry,
-      output: {
-        name: camelCase(libName),
-        file: path.join(distFolder, `bundles`, `${libName}.umd.min.js`),
-        format: 'umd',
-        sourcemap: true,
-        globals: rollupGlobals
-      },
-      plugins: rollupBaseConfig.plugins.concat([uglify({})])
+    const minifiedUmdConfig = Object.assign({}, {
+      inputOptions: Object.assign({}, rollupBaseConfig.inputOptions, { 
+        input: es5Entry,
+        plugins: rollupBaseConfig.inputOptions.plugins.concat([uglify({})])
+      }),
+      outputOptions: Object.assign({}, rollupBaseConfig.outputOptions, { 
+        file: path.join(distFolder, `bundles`, `${libName}.umd.min.js`) 
+      })
     });
 
     // ESM+ES5 flat module bundle.
-    const fesm5config = Object.assign({}, rollupBaseConfig, {
-      input: es5Entry,
-      output: {
-        name: camelCase(libName),
+    const fesm5config = Object.assign({}, {
+      inputOptions: Object.assign({}, rollupBaseConfig.inputOptions, {
+        input: es5Entry
+      }),
+      outputOptions: Object.assign({}, rollupBaseConfig.outputOptions, {
         file: path.join(distFolder, `${libName}.es5.js`),
-        format: 'es',
-        sourcemap: true,
-        globals: rollupGlobals
-      }
+      })
     });
 
     // ESM+ES2015 flat module bundle.
-    const fesm2015config = Object.assign({}, rollupBaseConfig, {
-      input: es2015Entry,
-      output: {
-        name: camelCase(libName),
-        file: path.join(distFolder, `${libName}.js`),
-        format: 'es',
-        sourcemap: true,
-        globals: rollupGlobals
-      }
+    const fesm2015config = Object.assign({}, {
+      inputOptions: Object.assign({}, rollupBaseConfig.inputOptions, {
+        input: es2015Entry
+      }),
+      outputOptions: Object.assign({}, rollupBaseConfig.outputOptions, {
+        file: path.join(distFolder, `${libName}.js`)
+      })
     });
 
     const allBundles = [
@@ -135,10 +134,7 @@ return Promise.resolve()
       fesm5config,
       fesm2015config
     ].map(cfg => {
-      rollup.rollup(cfg).then(bundle => {
-        bundle.generate(cfg.output);
-        bundle.write(cfg.output);
-      });
+      rollup.rollup(cfg.inputOptions).then(bundle => bundle.write(cfg.outputOptions));
     });
 
     return Promise.all(allBundles)
