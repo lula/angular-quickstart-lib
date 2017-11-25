@@ -2,13 +2,20 @@
 
 This quickstart is under active development and hasn't yet reached its final form.
 
-It may not be fully compatible with current versions of Angular.
+~~It may not be fully compatible with current versions of Angular.~~
+
+**UPDATE 24.11.2017**
+
+Angular updated to version 5.0.2.
+
+Rollup and rollup plugins updated to latest versions
 
 # Angular QuickStart Lib
+
 [![Build Status][travis-badge]][travis-badge-url]
 
 This is a simple library quickstart for Angular libraries, implementing the
-[Angular Package Format v4.0](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/edit#heading=h.k0mh3o8u5hx).
+[Angular Package Format v5.0](https://docs.google.com/document/d/1CZC2rcpxffTDfRDs6p1cfbmKNLA6x5O-NtkJglDaBVs/edit#heading=h.k0mh3o8u5hx).
 
 Currently only unscoped, primary entry-point libraries are supported.
 
@@ -48,9 +55,9 @@ Make sure you have at least Node 6.9 and NPM 3.0 installed.
 Then ...
 
 1. Create a project folder (you can call it `quickstart-lib` and rename it later).
-1. [Clone](#clone "Clone it from github") or [download](#download "download it from github") the **QuickStart Library seed** into your project folder.
-1. Install npm packages.
-1. Run `npm start` to launch the sample application.
+2. [Clone](#clone "Clone it from github") or [download](#download "download it from github") the **QuickStart Library seed** into your project folder.
+3. Install npm packages.
+4. Run `npm start` to launch the sample application.
 
 
 ### Clone
@@ -295,7 +302,7 @@ Below are some of the most important points:
 - [Manage your dependencies properly](#appendix-dependency-management)
 - Follow [Semantic Versioning](http://semver.org/)
 - Setup a Continuous Integration solution to test your library (included is a `.travis.yml` 
-file for [Travis CI](https://docs.travis-ci.com/user/getting-started/))!
+  file for [Travis CI](https://docs.travis-ci.com/user/getting-started/))!
 - Choose an [appropriate license](https://choosealicense.com/).
 
 </div>
@@ -309,7 +316,7 @@ compilation.
 Otherwise it will not be possible to include the library in an AOT compiled application.
 
 Only code written in TypeScript can be AOT compiled.
- 
+
 Before publishing the library must first be compiled using the AOT compiler (`ngc`). 
 `ngc` extends the `tsc` compiler by adding extensions to support AOT compilation in addition to
 regular TypeScript compilation.   
@@ -378,16 +385,16 @@ There are [three kinds of dependencies](https://docs.npmjs.com/files/package.jso
  `dependencies`, `devDependencies` and `peerDependencies`.
 
 - `dependencies`: here go all the other libraries yours depends on when being used.
-A good way to figure out these is to go through your library source code (in `src/lib` **only**)
-and list all the libraries there.
+  A good way to figure out these is to go through your library source code (in `src/lib` **only**)
+  and list all the libraries there.
 - `devDependencies`: libraries that you need while developing, testing and building your library
-go here.
-When a user installs your library, these won't be installed. 
-Users don't need to develop, build or test your library, they just need to run it.
+  go here.
+  When a user installs your library, these won't be installed. 
+  Users don't need to develop, build or test your library, they just need to run it.
 - `peerDependencies`: these are similar to `dependencies` since your library expects them to be
-there at runtime.
-The difference is that you don't want to install a new version of these, but instead use
-the one already available. 
+  there at runtime.
+  The difference is that you don't want to install a new version of these, but instead use
+  the one already available. 
 
 A good example of a peer dependency is `@angular/core` and all other main Angular libraries.
 If you listed these in `dependencies`, a new one - with a different version! - could be installed
